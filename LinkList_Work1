@@ -1,0 +1,132 @@
+//生成26个字母的线性表，并实现对特定字母的插入和删除的程序。
+#include <iostream>
+#include <stdio.h>
+#include <malloc.h>
+#define OK 1
+#define ERROR 0
+#define Len 26
+using namespace std;
+
+typedef struct LNode
+{
+	char data;
+	struct LNode *next;
+}LNode,*LinkList;
+
+LinkList head,p,q,s;
+int InitList(LinkList &L)
+{
+	int len = 0;
+	int i;
+    head = (LinkList)malloc(sizeof(LNode));
+    p = head;
+	for(i = 0;i < Len;i++)
+	{
+		p -> data = i + 'a';		
+		p -> next = (LinkList)malloc(sizeof(LNode));
+		p = p -> next;
+        len++;
+	}
+	p -> data = i + 'a';
+	p -> next = NULL;
+	cout << endl << "The length of list is: " << len <<endl;
+	return OK;
+}
+
+int ListInsert(LinkList &L,char e1,char e2,int &len) 
+{ 
+   int j = 0;
+   p = head;
+   while(p ->data != e2 && j<26) 
+   {
+     p = p -> next;
+     j++;
+   }
+   if(!p||j>25) 
+     return ERROR;
+   s = (LinkList)malloc(sizeof(LNode)); 
+   s -> data = e1; 
+   s -> next = p -> next;
+   p -> next = s;
+   len++;
+   cout << endl << "the length is: " << len << endl;
+   return OK;
+}
+
+int ListDelete(LinkList &L,char e,int &len)
+{
+    int j = 1;
+    p = head;
+    if(head -> data == e)//如果第一个元素
+    {
+        head = head -> next;
+        free(p);
+        return 0;
+    }
+    while(true)
+    {
+        p = head;
+        while(p ->data != e && j <= len)
+        {
+            q = p;
+            p = p -> next;
+            j++;
+        }
+        if(!p||j>len) 
+            break;
+        q -> next = p -> next;
+        free(p);
+        len--;
+        j = 1;
+    }
+    cout << endl << "the length is: " << len << endl;
+    return 0;
+}
+int Display(LinkList &L)
+{ 
+    p = head;
+    cout << "List: ";
+    while(p -> next)
+    {
+		cout << p -> data;
+		p = p -> next;
+    }
+    return OK;
+}
+
+int main()
+{
+    int len = 26;
+	int choose;
+	char letterX,letterY,letterZ;
+	LinkList L;
+	InitList(L);
+	Display(L);
+	while(1)
+	{
+		cout << endl << "-----------------------------------------------------------" << endl;
+		cout << "1.Insert     2.Delete    3.exit"<<endl;
+		cin >> choose;
+		switch(choose)
+		{
+			case 1:
+				cout << "Please input the letter X you will insert after Y" << endl;
+				cin >> letterX >> letterY;
+                ListInsert(L,letterX,letterY,len); 
+                cout << "after inserting: ";
+                Display(L);
+                break;
+			case 2:
+				cout << "Please input the letter you will delete" << endl;
+				cin >> letterZ;
+                ListDelete(L,letterZ,len);
+                cout << "after delating: ";
+                Display(L);
+                break;
+            case 3:
+                exit(0);
+		}
+    }
+    system("pause");
+	return 0;
+}
