@@ -1,0 +1,149 @@
+#include <iostream>
+#include <stdio.h>
+#include <malloc.h>
+#define OK 1
+#define ERROR 0
+#define STACK_INIT_SIZE 100
+#define STACKINCREMENT 10
+using namespace std;
+
+typedef struct{
+    int *base;
+    int *top;
+    int length;
+    int stacksize;
+}SqStack;
+
+int InitStack(SqStack &S)
+{
+    S.length = 0;
+    S.base = (int *)malloc(STACK_INIT_SIZE * sizeof(int));
+    if(!S.base)
+        exit(0);
+    S.top = S.base;
+    S.stacksize = STACK_INIT_SIZE;
+    return OK;
+}
+
+int DestroyStack(SqStack &S)
+{
+    free(S.base);
+    S.base = NULL;
+    S.top = NULL;
+    S.stacksize = 0;
+    return OK;
+}
+
+int ClearStack(SqStack &S)
+{
+    S.top = S.base;
+    S.length = 0;
+    return OK;
+}
+
+int StackEmpty(SqStack S)
+{
+    if(S.base == S.top)
+        cout << "Empty!!" << endl;
+    else
+        cout << "not empty!!" << endl;
+    return OK;
+}
+
+int StackLength(SqStack S)
+{
+    return S.length;
+}
+
+int GetTop(SqStack S)
+{
+    if(S.base == S.top)
+        return ERROR;
+    return *(S.top - 1);
+}
+
+int Push(SqStack &S,int e)
+{
+    if((S.top - S.base) >= S.stacksize)
+    {
+        S.base = (int*)realloc(S.base,(S.stacksize + STACKINCREMENT) * sizeof(int));
+        if(!S.base)
+            exit(0);
+        S.top = S.base + S.stacksize;
+        S.stacksize += STACKINCREMENT;
+    }
+    *S.top = e;
+    S.top++;
+    S.length++;
+    return OK;
+}
+
+int Pop(SqStack &S,int &e)
+{
+    if(S.base == S.top)
+        return ERROR;
+    e = *(S.top - 1);
+    S.top--;
+    S.length--;
+    return OK;
+}
+
+int Display(SqStack S)
+{
+    if(S.base == S.top)
+        return ERROR;
+    while(S.top > S.base)
+    {
+        cout << *S.base << " ";
+        S.base++;
+    }
+    return OK;
+}
+
+int main()
+{
+    int choice;
+    int Push_Number;
+    int Pop_Number;
+    SqStack S;
+    InitStack(S);
+    cout << "Tnit successfully! The length is: " << StackLength(S) <<endl; 
+    while(1)
+    {
+        cout << "--------------------------------------" << endl;
+        cout << "1.push  2.pop  3.clear  4.empty  5.exit" << endl;
+        cout << "--------------------------------------" << endl;
+        cout << "Input choice: ";
+        cin >> choice;
+        switch(choice)
+        {
+            case 1:
+                cout << "Input the Pushed number: ";
+                cin >> Push_Number;
+                Push(S,Push_Number);
+                cout << "push sucessfully!" << endl;
+                cout << "The Stack now is: " ;Display(S);
+                cout << endl << "The Length is: " << StackLength(S) << endl;
+                break;
+            case 2:
+                Pop(S,Pop_Number);
+                cout << "pop sucessfully!" << endl;
+                cout << "The poped number is: " << Pop_Number << endl;
+                cout << "The Stack now is: " ;Display(S);
+                cout << endl << "The Length is: " << StackLength(S) << endl;
+                break;
+            case 3:
+                ClearStack(S);
+                cout << "clear sucessfully!" << endl;
+                cout << "The Stack now is: " ;Display(S);
+                cout << endl << "The Length is: " << StackLength(S) << endl;
+                break;
+            case 4:
+                StackEmpty(S);break;
+            case 5:exit(0);
+        }
+        cout << endl << endl;
+    }
+    system("pause");
+    return 0;
+}
